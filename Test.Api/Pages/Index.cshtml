@@ -1,0 +1,132 @@
+﻿@page
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<style>
+    #dialog {
+        display: inline-flex;
+        flex-direction: column;
+        margin: 20px;
+    }
+
+    table#result td {
+        border: 1px solid gray;
+        padding: 10px;
+    }
+</style>
+
+<div>
+    <a href="/swagger">Swagger</a>
+    <br />
+
+    <div id="dialog"></div>
+
+    <div id="table"></div>
+    <button onclick="refresh()">
+        Refresh
+    </button>
+</div>
+
+<script>
+    function refresh() {
+        fetch('/person/all?q='+Math.random()).then(res => res.json()).then(data => createTable(data))
+    }
+
+    function createTable(data) {
+        const tableTarget = document.getElementById("table");
+        tableTarget.innerHTML = "";
+
+        if (!(data?.length > 0)) {
+            return;
+        }
+
+        const table = document.createElement("table")
+        table.id = 'result'
+        
+        const keys = Object.keys(data[0]);
+
+        let tr = document.createElement("tr")
+        keys.forEach(k => tr.appendChild(newTd(k, "th")))
+        table.appendChild(tr);
+
+        let curPersonId = 0;
+        data.map(item => {
+            tr = document.createElement("tr")
+            keys.forEach(key => {
+
+                const td = newTd(item[key] ?? '-')
+
+                if (key === 'id')
+                    curPersonId = item[key]
+
+                if (key === 'property2')
+                {
+                    const personId = curPersonId;
+                    td.onclick = () => {
+                        const newValue = prompt('Set new value')
+                        fetch(`person/process/${personId}/${newValue}`,
+                        {
+                            method: 'POST'
+                        }).then(refresh)
+                    }
+                }
+
+                if (key === 'progress')
+                {
+                    const personId = curPersonId;
+                    td.onclick = () => {
+                        fetch(`person/increaseProgress/${personId}`,
+                        {
+                            method: 'POST'
+                        }).then(refresh)
+                    }
+                }
+
+                tr.appendChild(td)
+            });
+            return tr;
+        })
+        .forEach(tr => table.appendChild(tr));
+
+        tableTarget.appendChild(table);
+    }
+
+    function newTd(text, type = "td") {
+        const td = document.createElement(type);
+        td.innerText = text;
+        return td;
+    }
+
+    function createDialog() {
+        const firstNameInput = document.createElement("input");
+        firstNameInput.id = "firstName";
+        const lastNameInput = document.createElement("input");
+        lastNameInput.id = "lastName";
+        const addPersonButton = document.createElement("button");
+        addPersonButton.innerText = "Create person";
+        addPersonButton.onclick = () => {
+            console.log(firstNameInput.value)
+            fetch('/person', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    firstName: firstNameInput.value,
+                    lastName: lastNameInput.value
+                })
+            }).then(() => refresh())
+        }
+
+        const dialog = document.getElementById("dialog");
+        dialog.appendChild(firstNameInput);
+        dialog.appendChild(lastNameInput);
+        dialog.appendChild(addPersonButton);
+    }
+    
+    window.onload = function() {
+        createDialog();
+        refresh();
+    }
+</script>
