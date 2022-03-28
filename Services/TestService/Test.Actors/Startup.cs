@@ -25,6 +25,8 @@ namespace Test.Actors
                 options.Actors.RegisterActor<HelloFromTomActor>();
                 options.Actors.RegisterActor<GoodByeFromJaneActor>();
                 options.Actors.RegisterActor<GoodByeFromTomActor>();
+                
+                options.Actors.RegisterActor<WorkerControllerActor>();
             });
         }
 
