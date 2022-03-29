@@ -8,8 +8,6 @@ namespace Test.Actors.Contract
     {
         Init,
         Work,
-        Idle,
-        Pause,
         Stop
     }
 }

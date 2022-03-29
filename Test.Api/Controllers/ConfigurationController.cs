@@ -16,7 +16,7 @@ namespace Test.Api.Controllers
     }
     
     [ApiController]
-    [Route("configuration")]
+    [Route("api/configuration")]
     public class ConfigurationController : ControllerBase
     {
         private readonly ILogger<TestController> _logger;
@@ -24,16 +24,6 @@ namespace Test.Api.Controllers
         public ConfigurationController(ILogger<TestController> logger)
         {
             _logger = logger;
-        }
-        
-        [Route("{key}")]
-        [HttpGet]
-        public async Task<string> Get([FromRoute] string key)
-        {
-            var actor = ActorProxy.Create<IConfigurationActor>(new ActorId($"Configuration_getter"), 
-                "ConfigurationActor");
-            
-            return await actor.Get(key);
         }
         
         [Route("app/{key}")]
@@ -44,15 +34,6 @@ namespace Test.Api.Controllers
                 "ConfigurationActor");
             
             return await actor.GetAppConfiguration(key);
-        }
-
-        [HttpPost]
-        public async Task Set([FromBody] ConfigurationSetRequest request)
-        {
-            var actor = ActorProxy.Create<IConfigurationActor>(new ActorId($"Configuration_setter_{request.Key ?? "unknown"}"), 
-                "ConfigurationActor");
-            
-            await actor.Set(request.Key, request.Value);
         }
         
         [Route("app")]

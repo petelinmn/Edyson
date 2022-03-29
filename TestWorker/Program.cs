@@ -12,40 +12,57 @@ namespace TestWorker
         {
             Console.WriteLine("Test worker started");
 
-            var workerId = Guid.Parse(args[0]);   
-            Console.WriteLine(workerId);
-            var configurationActor = ActorProxy.Create<IConfigurationActor>(new ActorId("ConfigurationActor"), "ConfigurationActor");
-            Console.WriteLine(1);
-            var appConfiguration = await configurationActor.GetAppConfiguration("kopa");
-            Console.WriteLine(appConfiguration.HelloActor);
-            var helloActor = ActorProxy.Create<IMessageActor>(new ActorId($"HelloActor"), 
-                appConfiguration.HelloActor);
-            Console.WriteLine(appConfiguration.GoodByeActor);
-            var goodByeActor = ActorProxy.Create<IMessageActor>(new ActorId($"GoodByeActor"),
-                appConfiguration.GoodByeActor);
-            Console.WriteLine(2);
-            var helloResult = await helloActor.Execute("Test");
-
-            var goodByeResult = await goodByeActor.Execute("Test");
-            Console.WriteLine($"{helloResult}\r\n{goodByeResult}");
-            
-            
+            var workerId = Guid.Parse(args[0]);
             var controllerActor = ActorProxy.Create<IWorkerControllerActor>(
                 new ActorId("WorkerControllerActor"), "WorkerControllerActor");
 
+            var status = await controllerActor.GetStatus(workerId);
+            var previousStatus = status;
+            
             while (true)
             {
-                var status = await controllerActor.GetStatus(workerId);
-                Console.WriteLine($"Current worker status: {status}");
-                
-                
-                if (status == WorkerStatus.Work)
+                status = await controllerActor.GetStatus(workerId);
+                if (previousStatus != status)
+                {
+                    Console.WriteLine($"Current worker status: {status}");
+                    previousStatus = status;
+                }
+
+                if (status != WorkerStatus.Init)
                     break;
                 
                 Thread.Sleep(100);
             }
-            
-            
+
+            var workCounter = await controllerActor.GetCounter(workerId);
+            while (workCounter <= 100)
+            {
+                workCounter = await controllerActor.GetCounter(workerId);
+                Console.WriteLine($"{workCounter++}%");
+                await controllerActor.SetCounter(workerId, workCounter);
+                
+                
+                if (workCounter == 100)
+                {
+                    Console.WriteLine("done!");
+                    break;
+                }
+                
+                status = await controllerActor.GetStatus(workerId);
+                if (previousStatus != status)
+                {
+                    Console.WriteLine($"Current worker status: {status}");
+                    previousStatus = status;
+                }
+
+                if (status == WorkerStatus.Stop)
+                {
+                    break;
+                }
+                
+                Thread.Sleep(300);
+            }
+
         }
     }
 }

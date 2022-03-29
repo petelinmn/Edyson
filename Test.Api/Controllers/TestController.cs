@@ -15,9 +15,8 @@ namespace Test.Api.Controllers
         public string? Name { get; set; }
     }
     
-    
     [ApiController]
-    [Route("api/v1")]
+    [Route("api/test")]
     public class TestController : ControllerBase
     {
         private readonly ILogger<TestController> _logger;
