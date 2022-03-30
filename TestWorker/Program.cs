@@ -10,14 +10,17 @@ namespace TestWorker
     {
         public static async Task Main(string[] args)
         {
-            Console.WriteLine("Test worker started");
-
             var workerId = Guid.Parse(args[0]);
             var controllerActor = ActorProxy.Create<IWorkerControllerActor>(
                 new ActorId("WorkerControllerActor"), "WorkerControllerActor");
 
             var status = await controllerActor.GetStatus(workerId);
             var previousStatus = status;
+
+            if (status == WorkerStatus.Init)
+            {
+                Console.WriteLine("Test worker started");
+            }
             
             while (true)
             {
@@ -30,8 +33,8 @@ namespace TestWorker
 
                 if (status != WorkerStatus.Init)
                     break;
-                
-                Thread.Sleep(100);
+
+                await Task.Delay(100);
             }
 
             var workCounter = await controllerActor.GetCounter(workerId);
@@ -57,6 +60,7 @@ namespace TestWorker
 
                 if (status == WorkerStatus.Stop)
                 {
+                    Console.WriteLine("Worker is stopped");
                     break;
                 }
                 

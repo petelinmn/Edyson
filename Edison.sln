@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Configuration.Actors", "Ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWorker", "TestWorker\TestWorker.csproj", "{5172AC45-0490-46B3-AB6E-4FE69091218C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactClient", "ReactClient\ReactClient.csproj", "{063D2DD8-1369-4DF0-B426-8D1FBD53CC77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{5172AC45-0490-46B3-AB6E-4FE69091218C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5172AC45-0490-46B3-AB6E-4FE69091218C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5172AC45-0490-46B3-AB6E-4FE69091218C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{063D2DD8-1369-4DF0-B426-8D1FBD53CC77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{063D2DD8-1369-4DF0-B426-8D1FBD53CC77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{063D2DD8-1369-4DF0-B426-8D1FBD53CC77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{063D2DD8-1369-4DF0-B426-8D1FBD53CC77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{54DD06C1-FC91-444D-83FB-2990D81CD1A3} = {FADD928E-4BD9-4639-879D-0E5EA27BAE9B}

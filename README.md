@@ -9,3 +9,6 @@ dapr run --app-id test_api --app-port 7276 --app-ssl dotnet run
 
 #TestWorker
 dapr run --app-id testtest dotnet run 0a844738-bec9-47d9-ba6e-6a97535898ca
+
+#ReactClient
+dapr run --app-id react_client --app-port 7163 --app-ssl dotnet run
