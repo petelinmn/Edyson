@@ -29,13 +29,12 @@ namespace Test.Api.Controllers
         
         [Route("register-worker")]
         [HttpPost]
-        public async Task<Guid> RegisterWorker()
+        public async Task<Guid> RegisterWorker([FromBody] string[] args)
         {
             var workerControllerActor = ActorProxy.Create<IWorkerManagerActor>(
                 new ActorId("WorkerManagerActor"), "WorkerManagerActor");
 
-            var guid = await workerControllerActor.Register();
-            return guid;
+            return await workerControllerActor.Register(args);
         }
         
         [Route("stop-worker")]

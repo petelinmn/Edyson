@@ -13,12 +13,13 @@ namespace WorkerManager.Actors
     {
         public List<Guid> WorkersQueue { get; set; } = new();
         
-        public async Task<Guid> Register()
+        public async Task<Guid> Register(string[] args = null)
         {
             var worker = new WorkerInfo
             {
                 Id = Guid.NewGuid(),
-                Status = WorkerStatus.Init
+                Status = WorkerStatus.Init,
+                Args = args ?? new string[] { }
             };
 
             await SaveWorker(worker);
@@ -75,6 +76,12 @@ namespace WorkerManager.Actors
         {
             var worker = await GetWorker(id);
             return worker.Data ?? new WorkerData();
+        }
+        
+        public async Task<string[]> GetWorkerArgs(Guid id)
+        {
+            var worker = await GetWorker(id);
+            return worker.Args;
         }
         
         private string GetWorkerStateKey(string key) => $"worker_{key}";

@@ -37,10 +37,12 @@ namespace TestWorker
                         async Task<WorkerData> GetWorkerData() =>
                             await managerActor.GetWorkerData(workerId.Value);
 
+                        var arguments = await managerActor.GetWorkerArgs(workerId.Value);
+                        
                         tasks.Add(new WorkerTask
                         {
                             WorkerId = workerId.Value,
-                            Task = Task.Run(() => Run(workerId.Value, SetWorkerData, GetWorkerData, ShouldStop))
+                            Task = Task.Run(() => Run(workerId.Value, arguments, SetWorkerData, GetWorkerData, ShouldStop))
                                 .ContinueWith(async t =>
                                 {
                                     tasks = tasks.Where(task => task.WorkerId != workerId.Value).ToList();
@@ -54,10 +56,11 @@ namespace TestWorker
             }
         }
 
-        private static async Task Run(Guid workerId, Func<WorkerData, Task> setWorkerData = null,
+        private static async Task Run(Guid workerId, string[] args, Func<WorkerData, Task> setWorkerData = null,
             Func<Task<WorkerData>>? getWorkerData = null, Func<Task<bool>>? shouldStop = null)
         {
             Console.WriteLine($"Start_{workerId}");
+            Console.WriteLine("Args: " + string.Join("", args));
 
             for (var i = 0; i < 100; i++)
             {
