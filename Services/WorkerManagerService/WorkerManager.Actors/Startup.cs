@@ -1,4 +1,4 @@
-namespace Test.Actors
+namespace WorkerManager.Actors
 {
     using Dapr.Client;
     using Microsoft.AspNetCore.Builder;
@@ -21,10 +21,7 @@ namespace Test.Actors
             services.AddSingleton(new DaprClientBuilder().Build());
             services.AddActors(options =>
             {
-                options.Actors.RegisterActor<HelloFromJaneActor>();
-                options.Actors.RegisterActor<HelloFromTomActor>();
-                options.Actors.RegisterActor<GoodByeFromJaneActor>();
-                options.Actors.RegisterActor<GoodByeFromTomActor>();
+                options.Actors.RegisterActor<WorkerManagerActor>();
             });
         }
 
